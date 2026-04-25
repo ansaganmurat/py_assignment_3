@@ -1,0 +1,8 @@
+{
+    "analysis": "Sleep vs GPA",
+    "low_cnt": 1818,
+    "high_cnt": 8182,
+    "low_avg_gpa": 3.48,
+    "high_avg_gpa": 3.65,
+    "difference": 0.17
+}
