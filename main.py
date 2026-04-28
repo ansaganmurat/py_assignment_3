@@ -1,9 +1,6 @@
 import os
 import csv
 import json
-from csv import excel
-from sys import excepthook
-
 
 class FileManager:
     #Task 1: FileManager
