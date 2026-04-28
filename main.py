@@ -1,6 +1,9 @@
 import os
 import csv
 import json
+from csv import excel
+from sys import excepthook
+
 
 class FileManager:
     #Task 1: FileManager
@@ -56,32 +59,26 @@ class DataAnalyser:
         self.result = {}
 
     def analyse(self):
-        low_sleep_gpas = []
-        high_sleep_gpas = []
+        try:
+            low_sleep_list = list(filter(lambda s: float(s.get('sleep_hours', 0)) < 6, self.students))
+            high_sleep_list = list(filter(lambda s: float(s.get('sleep_hours', 0)) >= 6, self.students))
 
-        for s in self.students:
-            try:
-                gpa = float(s['GPA'])
-                sleep = float(s['sleep_hours'])
+            low_sleep_gpas = list(map(lambda s: float(s.get('GPA', 0)), low_sleep_list))
+            high_sleep_gpas = list(map(lambda s: float(s.get('GPA', 0)), high_sleep_list))
 
-                if sleep < 6:
-                    low_sleep_gpas.append(gpa)
-                else:
-                    high_sleep_gpas.append(gpa)
-            except (ValueError, KeyError):
-                continue
+            avg_low = sum(low_sleep_gpas) / len(low_sleep_gpas) if low_sleep_gpas else 0
+            avg_high = sum(high_sleep_gpas) / len(high_sleep_gpas) if high_sleep_gpas else 0
 
-        avg_low = sum(low_sleep_gpas) / len(low_sleep_gpas) if low_sleep_gpas else 0
-        avg_high = sum(high_sleep_gpas) / len(high_sleep_gpas) if high_sleep_gpas else 0
-
-        self.result = {
-            "analysis": "Sleep vs GPA",
-            "low_cnt": len(low_sleep_gpas),
-            "high_cnt": len(high_sleep_gpas),
-            "low_avg_gpa": round(avg_low, 2),
-            "high_avg_gpa": round(avg_high, 2),
-            "difference": round(avg_high - avg_low, 2)
-        }
+            self.result = {
+                "analysis": "Sleep vs GPA",
+                "low_cnt": len(low_sleep_gpas),
+                "high_cnt": len(high_sleep_gpas),
+                "low_avg_gpa": round(avg_low, 2),
+                "high_avg_gpa": round(avg_high, 2),
+                "difference": round(avg_high - avg_low, 2)
+            }
+        except ValueError:
+            print("Warning: could not convert values — check your CSV data.")
 
     def print_results(self):
         print("Sleep vs GPA Analysis")
